@@ -1,0 +1,202 @@
+{
+  "main": {
+    "id": "67a45806efad30a2",
+    "type": "split",
+    "children": [
+      {
+        "id": "ff1703642b102a7b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3b73b6ed61116e69",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "CAPRA — Identidade Visual para Aplicativos Mobile.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "CAPRA — Identidade Visual para Aplicativos Mobile"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "fa45dffa878e4650",
+    "type": "split",
+    "children": [
+      {
+        "id": "947b5b3a5d0473fe",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3e96237a78e5da6c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "e8f448a7492d411e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "765c611d30003de1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 263.8828125
+  },
+  "right": {
+    "id": "475a93ccbc195ba7",
+    "type": "split",
+    "children": [
+      {
+        "id": "176cc140f8c9a807",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0f386e34e1ab1dc5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "CAPRA_Identidade_Visual_v1.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos"
+            }
+          },
+          {
+            "id": "daf2d64ca81572a6",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "CAPRA_Identidade_Visual_v1.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída"
+            }
+          },
+          {
+            "id": "b818dbbec22b957d",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "2d328e2c7d6ed872",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas as propriedades"
+            }
+          },
+          {
+            "id": "b0ee87b1dc482954",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "CAPRA_Identidade_Visual_v1.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Sumário"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "3b73b6ed61116e69",
+  "lastOpenFiles": [
+    "CAPRA — Identidade Visual para Apps de TV.md",
+    "CAPRA — Identidade Visual para Dashboards.md",
+    "CAPRA — Identidade Visual para Web Responsiva.md",
+    "capra-manual-de-marca-v1_4.md",
+    "CAPRA — Identidade Visual para Aplicativos Mobile.md",
+    "capra-manual-de-marca-v1.3.md",
+    "CAPRA_Identidade_Visual_v1.md",
+    "Bem-vindo.md"
+  ]
+}
