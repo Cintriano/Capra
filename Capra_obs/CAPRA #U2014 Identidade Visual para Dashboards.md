@@ -4,7 +4,7 @@ Oct 11, 2026 · @Danilo Fernandes
 
 ## Introdução
 
-Este documento define como os dashboards da CAPRA usam a identidade visual: grade, indicadores, paleta de dados, gráficos, tabelas, filtros e estados. Ele estende o manual v1.3 e pede duas exceções a ele, descritas em Mudanças propostas no manual.
+Este documento define como os dashboards da CAPRA usam a identidade visual: grade, indicadores, paleta de dados, gráficos, tabelas, filtros e estados. As regras dele entraram no manual na v1.4 (Parte 10, Dados e dashboards), incluindo as duas exceções descritas em Mudanças aprovadas no manual; o movimento segue a Parte 11, na v1.6.
 
 | Tipo de painel | Exemplos | Foco |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ Este documento define como os dashboards da CAPRA usam a identidade visual: grad
 | Celular | Apps mobile e web responsiva | Uma coluna, gráficos simplificados, tabelas viram cartões |
 | Relógio e TV | Mobile e TV | Sem dashboard: só um indicador por tela ou complicação |
 
-Itens marcados como **proposta** não existem no manual v1.3 e precisam de aprovação para a v1.4.
+Itens marcados como **proposta** foram aprovados na v1.4 e estão na Parte 10 do manual; a marcação fica como registro.
 
 ## Princípios de dashboard
 
@@ -247,6 +247,7 @@ Um cartão nunca some nem muda de tamanho por falta de dado: ele mantém o títu
 
 - **Zero não é ausência.** Zero é um dado e aparece como 0. Dado ausente aparece como "—" e, na linha, como uma interrupção: nunca ligue pontos por cima da falta de dado nem desenhe zero no lugar.
 - **Sem brilho animado** nos blocos de carregamento: blocos estáticos ou com variação lenta de opacidade, e nada se mexe com movimento reduzido.
+- **Movimento (Parte 11 do manual):** gráficos se desenham uma vez, em `motion-slow`; valores trocam com esvanecimento em `motion-base`, sem contagem animada; atualizações não redesenham o gráfico.
 - **O tamanho do cartão é reservado** desde o carregamento, para o painel não pular quando os dados chegam.
 
 ## Interação
@@ -278,11 +279,11 @@ Todo gráfico tem três camadas de leitura: o desenho, uma frase com a conclusã
 - **Zoom de 200%:** rótulos que se sobrepõem são escondidos por ordem de importância, nunca sobrepostos.
 - **Movimento reduzido:** gráficos aparecem já desenhados, sem animação de entrada.
 
-## Mudanças propostas no manual v1.4
+## Mudanças aprovadas no manual v1.4
 
-Duas regras do manual v1.3 precisam de exceção para dashboards; as demais mudanças são acréscimos. Nenhuma cor nova entra na paleta.
+Duas regras do manual v1.3 ganharam exceção para dashboards; as demais mudanças foram acréscimos. Nenhuma cor nova entrou na paleta. Tudo abaixo está na Parte 10 do manual desde a v1.4.
 
-| Regra no v1.3 | Mudança proposta | Motivo |
+| Regra no v1.3 | Mudança aprovada | Motivo |
 | --- | --- | --- |
 | "Uma cor principal por visualização" | Continua como padrão (modo destaque). Exceção: até 4 cores no modo categórico, na ordem Cyan, Lilac, Peach, Gold | Gráficos com várias séries são comuns em painéis |
 | "No máximo dois acentos de contexto na mesma interface" e "o acento identifica o produto" | Dentro de gráficos, os acentos são cores de série e não identificam produto | Um painel do DW\_APOLO pode comparar séries sem sugerir produtos diferentes |
@@ -318,15 +319,15 @@ Use esta lista antes de publicar cada painel ou mudança grande num painel.
 - [ ] Painel testado com simulação de daltonismo e com zoom de 200%
 - [ ] Revisado nos temas dark e claro
 
-### Aprovar para a v1.4
+### Aprovado na v1.4
 
-- [ ] Exceções às regras de "uma cor por visualização" e de "dois acentos por interface"
-- [ ] Tokens da paleta de dados e das escalas sequencial e divergente
-- [ ] Regra de cor da variação por direção declarada
-- [ ] Tamanhos de cartão e alturas de gráfico
+- [x] Exceções às regras de "uma cor por visualização" e de "dois acentos por interface"
+- [x] Tokens da paleta de dados e das escalas sequencial e divergente
+- [x] Regra de cor da variação por direção declarada
+- [x] Tamanhos de cartão e alturas de gráfico
 
 ## Fontes
 
-- Manual de marca CAPRA v1.3 (`capra-manual-de-marca-v1_3.md`): paleta, contraste, cartões, badges e princípios de dados
+- Manual de marca CAPRA v1.6 (`capra-manual-de-marca-v1_6.md`): paleta, contraste, cartões, badges, Parte 10 (Dados e dashboards) e Parte 11 (Movimento)
 - Documentos CAPRA de apps mobile, web responsiva e apps de TV
 - Contrastes calculados com a fórmula de luminância relativa da WCAG a partir dos HEX do manual; escalas sequencial e divergente calculadas por mistura linear entre tokens

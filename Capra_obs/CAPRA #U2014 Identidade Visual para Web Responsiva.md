@@ -4,7 +4,7 @@ Oct 11, 2026 · @Danilo Fernandes
 
 ## Introdução
 
-Este documento aplica o manual de marca CAPRA v1.3 à web, com um único layout que se adapta do celular ao desktop. Ele não muda nenhuma regra do manual: define faixas de largura, como cada elemento muda entre elas e o que a implementação precisa garantir.
+Este documento aplica o manual de marca CAPRA v1.6 à web, com um único layout que se adapta do celular ao desktop. Ele não muda nenhuma regra do manual: define faixas de largura, como cada elemento muda entre elas e o que a implementação precisa garantir.
 
 | Tipo de produto web | Exemplos | Foco |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ Este documento aplica o manual de marca CAPRA v1.3 à web, com um único layout 
 
 **Unidades.** Medidas do manual em px valem como px de CSS. Texto usa `rem` (1 rem = 16 px no padrão do navegador), para respeitar o tamanho de fonte que a pessoa escolheu.
 
-**Relação com o documento mobile.** As faixas de largura e as alturas de toque são as mesmas do documento de apps mobile, para que web e app tenham o mesmo comportamento. Itens marcados como **proposta** não existem no manual v1.3 e precisam de aprovação para a v1.4.
+**Relação com o documento mobile.** As faixas de largura e as alturas de toque são as mesmas do documento de apps mobile, para que web e app tenham o mesmo comportamento. Itens marcados como **proposta** não existem no manual v1.6 e precisam de aprovação antes de entrar nele.
 
 ## Princípios de responsividade
 
@@ -240,22 +240,21 @@ O banner segue o manual (fragmento de espiral, poucos pontos, espaço negativo, 
 
 ## Movimento
 
-A web usa os mesmos tokens de movimento propostos para os apps, como variáveis CSS. Movimento é curto, desacelera ao chegar e some quando a pessoa pede menos movimento.
+O movimento segue a Parte 11 do manual v1.6. Na web, os tokens viram variáveis CSS: `--motion-fast`, `--motion-base`, `--motion-screen`, `--motion-slow`, `--motion-brand`, `--motion-brand-short`, `--motion-loop`, `--ease-enter`, `--ease-exit` e `--motion-distance`.
 
-| Token (proposta) | Duração | Uso na web |
-| --- | --- | --- |
-| `--motion-fast` | 100 ms | Hover, pressionado, troca de cor |
-| `--motion-base` | 200 ms | Abrir menu suspenso, dica, abas, transição entre páginas |
-| `--motion-screen` | 300 ms | Painel de menu e folha inferior no celular, diálogo |
-| `--motion-slow` | 450 ms | Entrada de banner, gráficos que se desenham |
+| Uso na web | Token |
+| --- | --- |
+| Hover, pressionado, troca de cor | `--motion-fast` (100 ms) |
+| Menu suspenso, dica, abas, transição entre páginas, troca de valores | `--motion-base` (200 ms) |
+| Painel de menu e folha inferior no celular, diálogo | `--motion-screen` (300 ms) |
+| Entrada de banner, gráficos que se desenham | `--motion-slow` (450 ms) |
 
-Curvas: entrada `cubic-bezier(0.2, 0, 0, 1)`, saída `cubic-bezier(0.3, 0, 1, 1)`.
-
-- **`prefers-reduced-motion: reduce`:** só mudanças de opacidade; nada se desloca, nada se repete.
-- **Sem sequestro de rolagem** e sem parallax. Elementos que aparecem ao rolar só esvanecem e sobem até 16 px, uma vez.
+- **`prefers-reduced-motion: reduce`:** só mudanças de opacidade; nada se desloca, nada se repete. Os SVGs de animação do kit já respeitam a preferência sozinhos.
+- **Sem sequestro de rolagem** e sem parallax. Elementos que aparecem ao rolar só esvanecem e sobem até 16 px (`--motion-distance`), uma vez.
 - **Só `transform` e `opacity`** são animados, para manter a página fluida no celular.
 - **Painéis:** no celular deslizam da borda; no desktop esvanecem no lugar.
-- **Carregamento:** indicador orbital (um ponto percorrendo um arco) ou blocos `surfaceElevated` no lugar do conteúdo. O logo nunca gira.
+- **Entrada do logo:** `capra-entrada.svg` (ou a entrada da logo filha) só na primeira visita da sessão; nas trocas de página o logo já aparece parado.
+- **Carregamento:** `capra-carregamento.svg` (e `-fundo-claro`) ou blocos `surfaceElevated` no lugar do conteúdo. O logo nunca gira.
 
 ## Acessibilidade
 
@@ -280,7 +279,7 @@ A meta é WCAG 2.2 nível AA em todas as faixas. Cores e contraste já vêm reso
 
 ## Implementação e desempenho
 
-`capra-tokens.json` continua sendo a fonte única: dele saem as variáveis CSS da web e o tema Flutter dos apps. Breakpoints e movimento entram no mesmo arquivo quando forem aprovados.
+`capra-tokens.json` continua sendo a fonte única: dele saem as variáveis CSS da web e o tema Flutter dos apps. Os tokens de movimento já estão no arquivo desde a v1.6; os breakpoints entram quando forem aprovados.
 
 ### Técnicas
 
@@ -314,7 +313,7 @@ Medidas no 75º percentil de visitas reais, separadas entre celular e desktop.
 
 ## Checklist de entrega
 
-Use esta lista antes de publicar cada site ou versão de aplicação web. A última parte reúne as propostas que precisam de aprovação para o manual v1.4.
+Use esta lista antes de publicar cada site ou versão de aplicação web. A última parte reúne as propostas que ainda precisam de aprovação para entrar no manual.
 
 ### Marca
 
@@ -344,17 +343,16 @@ Use esta lista antes de publicar cada site ou versão de aplicação web. A últ
 - [ ] Fontes auto-hospedadas com `swap` e reserva ajustada
 - [ ] Imagens com proporção reservada; imagem do topo sem carregamento tardio
 
-### Aprovar para a v1.4
+### Aprovar para o manual
 
 - [ ] Tokens de breakpoint `bp-xs` a `bp-xl`
 - [ ] Alturas de cabeçalho por faixa (56, 64 e 72 px)
 - [ ] Escala tipográfica por faixa, com corpo de 16 / 26 em textos longos
-- [ ] Tokens de movimento e curvas, comuns a web e apps
 
 ## Fontes
 
-- Manual de marca CAPRA v1.3 (`capra-manual-de-marca-v1_3.md`)
-- Documento CAPRA: Identidade Visual para Aplicativos Mobile (faixas de largura, escala mobile e movimento)
+- Manual de marca CAPRA v1.6 (`capra-manual-de-marca-v1_6.md`)
+- Documento CAPRA: Identidade Visual para Aplicativos Mobile (faixas de largura e escala mobile)
 - [ADA Compliance Pros: critérios novos da WCAG 2.2 e reflow](https://www.adacompliancepros.com/blog/wcag-22-new-criteria-thresholds)
 - [Deque University: regra de tamanho de alvo (WCAG 2.5.8)](https://dequeuniversity.com/rules/axe/4.7/target-size)
 - [Specification.website: Core Web Vitals](https://specification.website/spec/performance/core-web-vitals/)

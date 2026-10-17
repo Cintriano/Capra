@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CAPRA — gerador de logos filhas (v1.3)
+CAPRA — gerador de logos filhas (v1.6)
 
 Gera a marca de um produto pelo método do "disco orbital":
 disco na cor do acento + letra(s) recortada(s) + dois braços de órbita.
@@ -12,7 +12,7 @@ Uso:
   python capra_filhas.py letras "Nome"              # mostra a(s) letra(s) que o nome receberia
 
 Arquivos esperados (mesma pasta deste script, ou indique com --alfabeto / --registro):
-  capra-alfabeto.json   letras A–Z desenhadas para a CAPRA
+  capra-alfabeto.json   alfabeto CAPRA (o script usa só as letras A–Z)
   registro.csv          lista de produtos (produto, marca, area, neutro, data, observacoes)
 
 Só usa a biblioteca padrão do Python 3.8+. Para PNG, instale cairosvg (opcional):
@@ -48,7 +48,8 @@ OCUPA_ICONE = 0.68               # largura da marca completa no ícone de app
 OCUPA_REDUZIDO = 0.74            # largura do disco no ícone reduzido
 
 def _f(v):
-    return f"{v:.2f}".rstrip("0").rstrip(".")
+    s = f"{v:.2f}".rstrip("0").rstrip(".")
+    return "0" if s == "-0" else s          # igual ao gerador web, que nunca escreve -0
 
 def _d(contornos):
     return "".join("M" + " L".join(f"{_f(x)},{_f(y)}" for x, y in c) + " Z" for c in contornos)
@@ -75,6 +76,28 @@ def _braco(a0):
     return esq + dir_[::-1]
 
 BRACOS = [_braco(BRACO["a0"]), _braco(BRACO["a0"] + 180)]
+
+def _espinha(a0):
+    """linha central do braço (a mesma espiral), prolongada nas pontas; guia a máscara da entrada animada"""
+    p = BRACO
+    rho0 = R + p["gap"] + p["w0"] / 2
+    b = math.log((rho0 + p["grow"]) / rho0) / math.radians(p["sweep"])
+    e0, e1, n = math.radians(14), math.radians(12), 96
+    pts = []
+    for i in range(n + 1):
+        ph = -e0 + (math.radians(p["sweep"]) + e0 + e1) * i / n
+        a = math.radians(a0) + ph
+        r = rho0 * math.exp(b * ph)
+        pts.append((r * math.cos(a), r * math.sin(a)))
+    def ext(q, o, E):
+        dx, dy = q[0] - o[0], q[1] - o[1]; l = math.hypot(dx, dy)
+        return (q[0] + dx / l * E, q[1] + dy / l * E)
+    pts.insert(0, ext(pts[0], pts[1], 20)); pts.append(ext(pts[-1], pts[-2], 10))
+    comprimento = sum(math.hypot(x1 - x0, y1 - y0) for (x0, y0), (x1, y1) in zip(pts, pts[1:]))
+    return pts, comprimento
+
+ESPINHAS = [_espinha(BRACO["a0"]), _espinha(BRACO["a0"] + 180)]
+EASE = "cubic-bezier(0.2, 0, 0, 1)"   # ease-enter (Parte 11 do manual)
 
 def _bbox(pts):
     xs = [x for x, y in pts]; ys = [y for x, y in pts]
@@ -141,7 +164,7 @@ def _grupo(alfa, letras, cor, tx, ty, k, bracos=True):
     disco = _circulo(R)
     g = f'<g transform="translate({_f(tx)} {_f(ty)}) scale({_f(k)})" fill="{cor}">'
     letras_cs = alfa.no_disco(letras, DIAG_MAX if bracos else DIAG_MAX_REDUZIDO)
-    g += f'<path d="{_d([disco] + letras_cs)}" fill-rule="evenodd"/>'
+    g += f'<path fill-rule="evenodd" d="{_d([disco] + letras_cs)}"/>'
     if bracos:
         for b in BRACOS:
             g += f'<path d="{_d([b])}"/>'
@@ -159,6 +182,26 @@ def svg_marca(alfa, letras, cor, titulo):
     w, h = x1 - x0, y1 - y0
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {_f(w)} {_f(h)}" role="img" aria-label="{titulo}">'
             f"<title>{titulo}</title>{_grupo(alfa, letras, cor, -x0, -y0, 1)}</svg>\n")
+
+def svg_entrada(alfa, letras, cor, titulo, ident):
+    """entrada animada da marca (Parte 11): disco 0–300 ms, braços 200–800 ms; respeita movimento reduzido"""
+    x0, y0, x1, y1 = _limites(True)
+    defs = kf = bracos = ""
+    for i, ((pts, comp), braco) in enumerate(zip(ESPINHAS, BRACOS)):
+        D = comp * 1.02 + 2
+        caminho = "M" + " L".join(f"{_f(x)},{_f(y)}" for x, y in pts)
+        defs += (f'<mask id="{ident}-m{i}" maskUnits="userSpaceOnUse" x="-400" y="-400" width="800" height="800">'
+                 f'<path class="{ident}-a" d="{caminho}" fill="none" stroke="#fff" stroke-width="50" stroke-dasharray="{_f(D)} {_f(D)}" '
+                 f'style="animation:{ident}-d{i} 600ms {EASE} 200ms both"/></mask>')
+        kf += f"@keyframes {ident}-d{i}{{from{{stroke-dashoffset:{_f(D)}}}}}"
+        bracos += f'<path d="{_d([braco])}" mask="url(#{ident}-m{i})"/>'
+    disco = (f'<path class="{ident}-a" fill-rule="evenodd" d="{_d([_circulo(R)] + alfa.no_disco(letras, DIAG_MAX))}" '
+             f'style="transform-box:fill-box;transform-origin:center;animation:{ident}-s 300ms {EASE} both"/>')
+    css = (f"<style>@keyframes {ident}-s{{from{{opacity:0;transform:scale(.9)}}}}@keyframes {ident}-f{{from{{opacity:0}}}}{kf}"
+           f"@media (prefers-reduced-motion: reduce){{.{ident}-a{{animation:none!important}}.{ident}-t{{animation:{ident}-f 200ms {EASE} both}}}}</style>")
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {_f(x1 - x0)} {_f(y1 - y0)}" role="img" aria-label="{titulo}">'
+            f"<title>{titulo}</title>{css}<defs>{defs}</defs><g class=\"{ident}-t\"><g transform=\"translate({_f(-x0)} {_f(-y0)}) scale(1)\" fill=\"{cor}\">"
+            f"{disco}{bracos}</g></g></svg>\n")
 
 def svg_icone(alfa, letras, fundo, cor, titulo, tamanho=1024, bracos=True, raio=0):
     x0, y0, x1, y1 = _limites(bracos)
@@ -203,6 +246,7 @@ def gerar_produto(alfa, linha, saida, png=True):
         f"{base}-icone-reduzido.svg": svg_icone(alfa, letras, fundo, cor, f"{produto} — ícone reduzido", bracos=False),
         f"{base}-favicon.svg": svg_icone(alfa, letras, fundo, cor, f"{produto} — favicon", tamanho=64, bracos=False, raio=12),
         f"{base}-marca.svg": svg_marca(alfa, letras, cor, f"{produto} — marca"),
+        f"{base}-entrada.svg": svg_entrada(alfa, letras, cor, f"{produto} — entrada", f"e-{base}"),
     }
     for nome, conteudo in arquivos.items():
         with open(os.path.join(pasta, nome), "w", encoding="utf-8") as fh:

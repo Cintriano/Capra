@@ -1,4 +1,4 @@
-# CAPRA — Kit de logos filhas (v1.3)
+# CAPRA — Kit de logos filhas (v1.6)
 
 Tudo o que é preciso para criar a marca de qualquer produto da CAPRA pelo método do disco orbital. A regra completa está em `docs/08-logos-filhas.md`.
 
@@ -34,6 +34,7 @@ Os arquivos saem em `gerador/logos/<produto>/`:
 | `<produto>-icone-reduzido.svg` | Abaixo de 32 px |
 | `<produto>-favicon.svg` + PNG 48/32/16 | Favicon |
 | `<produto>-marca.svg` | Marca sem fundo, só sobre o neutro do produto |
+| `<produto>-entrada.svg` | Entrada animada (0,8 s), com as mesmas regras de fundo da marca; regras na Parte 11 do manual |
 
 Áreas: `plataforma` (Ciano), `dados` (Lilás), `automacao` (Mint), `financas` (Peach), `infraestrutura` (Gold). Neutros: `preto`, `branco`.
 
@@ -45,15 +46,15 @@ Os arquivos saem em `gerador/logos/<produto>/`:
 
 ```text
 alfabeto/
-  capra-alfabeto.json        letras A–Z (contornos e perfis de espaçamento)
-  capra-alfabeto-prova.svg   prova com todas as letras
-  svg/capra-letra-A.svg …    uma letra por arquivo
+  capra-alfabeto.json        letras A–Z, algarismos 0–9 e sinais (contornos e perfis de espaçamento)
+  capra-alfabeto-prova.svg   prova com letras, algarismos e sinais
+  svg/letra-A.svg …          um caractere por arquivo (letra-, algarismo-, sinal-)
 gerador/
   capra_filhas.py            script
-  capra-alfabeto.json        cópia usada pelo script
+  capra-alfabeto.json        cópia usada pelo script (igual à de alfabeto/)
   registro.csv               registro de produtos
 ferramenta/
   gerador-logos-filhas.html  cópia do gerador web
-logos/ravix/                 exemplo completo gerado pelo script
+logos/ravix/                 exemplo completo gerado pelo script (inclui a entrada animada)
 docs/08-logos-filhas.md      regras, com figuras embutidas
 ```

@@ -4,7 +4,7 @@ Oct 10, 2026 · @Danilo Fernandes
 
 ## Introdução
 
-Este documento leva o manual de marca CAPRA v1.3 para apps de smartphone, tablet e relógio inteligente. Ele não muda nenhuma regra do manual: converte medidas para pt e dp, diz o que muda em cada dispositivo e lista o que entregar às lojas.
+Este documento leva o manual de marca CAPRA v1.6 para apps de smartphone, tablet e relógio inteligente. Ele não muda nenhuma regra do manual: converte medidas para pt e dp, diz o que muda em cada dispositivo e lista o que entregar às lojas.
 
 Vale para o app da CAPRA e para os produtos com logo filha (Diem, Ravix, Melope, Clam e DW\_APOLO). A área e o neutro de cada produto vêm do registro de produtos (`registro.csv`). Em caso de conflito, o manual de marca prevalece.
 
@@ -16,7 +16,7 @@ Vale para o app da CAPRA e para os produtos com logo filha (Diem, Ravix, Melope,
 
 **Conversão.** 1 px do manual = 1 pt no iOS = 1 dp no Android. Espaços, raios, ícones e tamanhos mínimos do logo usam o mesmo número. Texto usa sp no Android para acompanhar a escala de fonte do sistema.
 
-**Itens marcados como proposta** não existem no manual v1.3. Eles precisam de aprovação antes de entrar na v1.4.
+**Itens marcados como proposta** não existem no manual v1.6. Eles precisam de aprovação antes de entrar nele.
 
 ## Princípios de adaptação
 
@@ -95,7 +95,7 @@ Fundo liso e a marca centralizada, sem texto, sem slogan e sem animação longa.
 | Produto | Fundo no neutro do produto e `-marca.svg` | Igual ao dark: a marca sem fundo só pode aparecer sobre o próprio neutro |
 
 - **Android:** a área do ícone é de 288 × 288 dp e a marca cabe num círculo de 192 dp. Cor de fundo da janela = a cor da tabela.
-- **Animação (opcional):** até 1 s, só opacidade e escala suave. Nunca girar a marca: o manual proíbe.
+- **Animação (opcional):** a entrada curta da Parte 11 do manual: 800 ms (`motion-brand-short`), só opacidade e escala de 90% a 100%. Produtos usam a entrada da logo filha, também de 800 ms. Nunca girar a marca.
 - **Flutter:** gere as telas nativas das duas plataformas a partir dos mesmos arquivos, para não haver salto de cor ao abrir o app.
 
 ### Cabeçalho e tela Sobre
@@ -285,7 +285,7 @@ No relógio, a marca se resume a fundo preto, um acento e arcos; cada tela respo
 
 ### Fundo preto (proposta)
 
-Proposta para a v1.4: token `backgroundWatch` = #000000, só para relógios. Em tela OLED, o preto apaga os pixels, economiza bateria e funde a tela com a borda do aparelho. Com #121416, o contorno da tela fica visível no escuro, principalmente em telas redondas.
+Proposta para o manual: token `backgroundWatch` = #000000, só para relógios. Em tela OLED, o preto apaga os pixels, economiza bateria e funde a tela com a borda do aparelho. Com #121416, o contorno da tela fica visível no escuro, principalmente em telas redondas.
 
 Cartões continuam em `surface` e botões secundários em `surfaceElevated`. Texto e acentos ganham contraste sobre o preto, então todas as combinações do manual continuam válidas.
 
@@ -334,22 +334,12 @@ Os ícones seguem o manual: lineares, com pontas e cantos arredondados, nas grad
 
 ## Movimento e retorno háptico
 
-O manual v1.3 não define movimento; esta seção inteira é proposta. O movimento é curto, desacelera ao chegar e nunca chama mais atenção que o conteúdo, como os gradientes do manual.
+O movimento segue a Parte 11 do manual v1.6: tokens de duração e curva, entrada do logo, carregamento orbital, regras de interface e movimento reduzido. Aqui fica só o que é próprio dos apps.
 
-| Token proposto | Duração | Uso |
-| --- | --- | --- |
-| `motion-fast` | 100 ms | Pressionado, troca de cor |
-| `motion-base` | 200 ms | Chaves, seleção, elementos pequenos que entram ou saem |
-| `motion-screen` | 300 ms | Troca de tela, folha inferior, diálogo |
-| `motion-slow` | 450 ms | Onboarding, estados vazios, gráficos que se desenham |
-
-Curvas: entrada com desaceleração, `cubic-bezier(0.2, 0, 0, 1)`; saída com aceleração, `cubic-bezier(0.3, 0, 1, 1)`.
-
-- **Transições de tela** seguem a plataforma: empilhar no iOS, deslizar e esvanecer no Android.
-- **Carregamento orbital:** um ponto percorre um arco em volta de um núcleo. O logo nunca gira; o manual proíbe.
-- **Gráficos e arcos** se desenham uma vez, do início ao fim, sem repetir.
-- **Sem** brilho pulsante, parallax forte ou rebote exagerado.
-- **Reduzir movimento:** com a opção ligada no sistema, deslocamentos viram esvanecimento e animações em repetição param.
+- **Transições de tela** seguem a plataforma, em `motion-screen` (300 ms): empilhar no iOS, deslizar e esvanecer no Android.
+- **Flutter:** use os valores dos tokens em `Duration`, `Cubic(0.2, 0, 0, 1)` na entrada e `Cubic(0.3, 0, 1, 1)` na saída. O Flutter não reproduz SVG animado: a entrada do logo e das logos filhas é montada com os arquivos estáticos e os mesmos tempos.
+- **Carregamento:** o carregamento orbital do manual (`capra-carregamento.svg` como referência), com o texto "Carregando…" para leitores de tela.
+- **Reduzir movimento:** com `MediaQuery.of(context).disableAnimations` ligado, deslocamentos viram esvanecimento, as entradas de marca viram esvanecimento de 200 ms e o carregamento fica parado.
 
 ### Retorno háptico
 
@@ -410,7 +400,7 @@ O Google recomenda evitar fundo preto ou cinza escuro, porque ele some no fundo 
 
 ## Checklist de entrega
 
-Use esta lista em cada versão de cada app. A última parte reúne as propostas deste documento que precisam de aprovação para entrar no manual v1.4.
+Use esta lista em cada versão de cada app. A última parte reúne as propostas deste documento que ainda precisam de aprovação para entrar no manual.
 
 ### Ícone e marca
 
@@ -435,6 +425,7 @@ Use esta lista em cada versão de cada app. A última parte reúne as propostas 
 - [ ] Leitor de tela com rótulos em marca, ícones e valores
 - [ ] Alvos de toque de 44 pt ou 48 dp
 - [ ] Reduzir movimento e texto em negrito respeitados
+- [ ] Tela de abertura e carregamento conforme a Parte 11 do manual
 
 ### Lojas
 
@@ -442,19 +433,18 @@ Use esta lista em cada versão de cada app. A última parte reúne as propostas 
 - [ ] Gráfico de destaque de 1024 × 500 com a espiral nas bordas
 - [ ] Textos sem "melhor", "nº 1" ou "baixe agora"
 
-### Aprovar para a v1.4
+### Aprovar para o manual
 
 - [ ] Escala tipográfica mobile (corpo de 16)
 - [ ] Altura de 48 para botão e campo no app
 - [ ] Token `backgroundWatch` #000000 para relógios
-- [ ] Tokens de movimento e curvas
 - [ ] Estado desabilitado a 38% de opacidade
 - [ ] Logo filha em até 58% no ícone adaptativo do Android
 - [ ] Biblioteca de ícones de interface
 
 ## Fontes
 
-- Manual de marca CAPRA v1.3 (`capra-manual-de-marca-v1_3.md`)
+- Manual de marca CAPRA v1.6 (`capra-manual-de-marca-v1_6.md`)
 - [Apple: Create icons with Icon Composer (WWDC25)](https://developer.apple.com/videos/play/wwdc2025/361)
 - [Apple: Icon Composer group lab (WWDC26)](https://developer.apple.com/videos/play/wwdc2026/8012/)
 - [Android Developers: Adaptive icons](https://developer.android.com/guide/practices/ui_guidelines/icon_design_adaptive)

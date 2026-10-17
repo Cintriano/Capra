@@ -4,7 +4,7 @@ Oct 11, 2026 · @Danilo Fernandes
 
 ## Introdução
 
-Este documento leva o manual de marca CAPRA v1.3 para apps de TV, vistos a cerca de 3 metros e usados com controle remoto. Ele não muda nenhuma regra do manual: converte medidas para a tela da TV e define foco, navegação e o que entregar às lojas.
+Este documento leva o manual de marca CAPRA v1.6 para apps de TV, vistos a cerca de 3 metros e usados com controle remoto. Ele não muda nenhuma regra do manual: converte medidas para a tela da TV e define foco, navegação e o que entregar às lojas.
 
 | Plataforma | Base técnica | Como aplicar |
 | --- | --- | --- |
@@ -15,7 +15,7 @@ Este documento leva o manual de marca CAPRA v1.3 para apps de TV, vistos a cerca
 
 **Dark first combina com TV.** A sala costuma estar escura e o conteúdo é o protagonista: o fundo Void e os acentos pastel do manual funcionam sem adaptação de paleta.
 
-**Relação com os outros documentos.** Tokens, componentes e movimento vêm do manual e dos documentos de apps mobile e de web. Itens marcados como **proposta** não existem no manual v1.3 e precisam de aprovação para a v1.4.
+**Relação com os outros documentos.** Tokens e movimento vêm do manual; componentes, do manual e dos documentos de apps mobile e de web. Itens marcados como **proposta** não existem no manual v1.6 e precisam de aprovação antes de entrar nele.
 
 ## Princípios da interface vista a 3 metros
 
@@ -190,18 +190,20 @@ O foco CAPRA (proposta) é o `focus-ring` do manual ampliado para a TV: o item c
 
 ## Movimento na TV
 
-A TV usa os tokens de movimento propostos nos documentos de apps e de web. O que manda é a resposta ao controle: o foco anda no instante em que o botão é apertado, e toda animação pode ser interrompida pelo próximo comando.
+A TV usa os tokens de movimento da Parte 11 do manual v1.6. O que manda é a resposta ao controle: o foco anda no instante em que o botão é apertado, e toda animação pode ser interrompida pelo próximo comando.
 
-| Momento | Token (proposta) | Duração |
+| Momento | Token | Duração |
 | --- | --- | --- |
 | Foco muda de item (escala e anel) | `motion-base` | 200 ms |
 | Fileira rola para acompanhar o foco | `motion-screen` | 300 ms |
 | Troca de tela, menu lateral abrindo | `motion-screen` | 300 ms |
 | Controles do player aparecendo ou sumindo | `motion-base` | 200 ms |
+| Abertura do app (logo) | `motion-brand-short` | 800 ms |
 
 - **Direcional segurado:** a fileira rola contínua, sem esperar cada animação terminar.
 - **Prévia de vídeo automática** (opcional): só depois de 3 s com o item parado em foco, e nunca se o sistema estiver com prévias ou movimento desligados.
-- **Carregamento:** indicador orbital, um ponto percorrendo um arco; o logo nunca gira.
+- **Carregamento:** o carregamento orbital do manual (`capra-carregamento.svg`); o logo nunca gira.
+- **Abertura:** a entrada curta do símbolo ou a entrada da logo filha, uma vez, e nunca durante a reprodução.
 - **Profundidade só do sistema:** o deslocamento em camadas do tvOS é da plataforma. O app não desenha parallax nem efeitos 3D próprios.
 
 ## Acessibilidade na TV
@@ -214,7 +216,7 @@ Na TV, acessibilidade começa pelo foco: tudo que o leitor de tela anuncia, o co
 | Legendas | O player oferece legendas e respeita o estilo escolhido no sistema (tamanho, cor, fundo). Com os controles visíveis, a legenda sobe para não ficar coberta |
 | Texto em negrito e tamanho de texto | Onde o sistema oferecer, o app acompanha e o layout cresce sem cortar |
 | Aumentar contraste | Divisórias e cartões passam de `border` para `borderStrong` |
-| Reduzir movimento | Sem prévias automáticas; o foco mostra só o anel, sem escala |
+| Reduzir movimento | Sem prévias automáticas; o foco mostra só o anel, sem escala; a abertura vira esvanecimento de 200 ms |
 | Comandos de voz | Ações com verbos claros ("Reproduzir", "Adicionar à lista") e busca por voz |
 
 - **Cor nunca sozinha:** estado sempre com ícone e texto.
@@ -240,7 +242,7 @@ Na TV, a vitrine é a própria interface em tela cheia: capturas reais, sem mold
 
 ## Checklist de entrega
 
-Use esta lista antes de cada versão de app de TV. A última parte reúne as propostas que precisam de aprovação para o manual v1.4.
+Use esta lista antes de cada versão de app de TV. A última parte reúne as propostas que ainda precisam de aprovação para entrar no manual.
 
 ### Marca
 
@@ -269,7 +271,7 @@ Use esta lista antes de cada versão de app de TV. A última parte reúne as pro
 - [ ] Capturas em 1920 × 1080 ou 3840 × 2160, sem moldura e com dados fictícios
 - [ ] Banner de TV de 1280 × 720 na Google Play
 
-### Aprovar para a v1.4
+### Aprovar para o manual
 
 - [ ] Regra de conversão (× 1 em dp no Android TV, × 2 no tvOS e na TV web)
 - [ ] Estado de foco CAPRA para TV (escala, respiro e anel)
@@ -279,8 +281,8 @@ Use esta lista antes de cada versão de app de TV. A última parte reúne as pro
 
 ## Fontes
 
-- Manual de marca CAPRA v1.3 (`capra-manual-de-marca-v1_3.md`)
-- Documentos CAPRA de apps mobile e de web responsiva (tokens de movimento, regras de componentes)
+- Manual de marca CAPRA v1.6 (`capra-manual-de-marca-v1_6.md`), incluindo a Parte 11, Movimento
+- Documentos CAPRA de apps mobile e de web responsiva (regras de componentes)
 - [Android Developers: layouts para TV](https://developer.android.com/design/ui/tv/guides/styles/layouts) (tela de 960 × 540 dp, margens, grade e larguras de cartão)
 - [Apple: Asset Catalog Format Reference, Brand Assets](https://developer.apple.com/library/ios/documentation/Xcode/Reference/xcode_ref-Asset_Catalog_Format/BrandAssetsType.html) (ícone 400 × 240 e 1280 × 768, Top Shelf)
 - [EaselTV: Apple TV submission](https://docs.easeltv.com/docs/apple-tv-submission) (Top Shelf larga e resoluções @2x)
