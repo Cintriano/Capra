@@ -68,5 +68,34 @@
     {"name": "icon-size-sm", "value": "16px", "usage": "Ícones em texto e badges."},
     {"name": "icon-size-md", "value": "20px", "usage": "Ícones de botões e campos."},
     {"name": "icon-size-lg", "value": "24px", "usage": "Navegação e ações principais."}
+  ]},
+  "data": {"tokens": [
+    {"name": "data-1", "value": "{accent}", "usage": "Cyan. Série 1 do modo categórico. A série principal usa o acento do produto; as demais seguem a ordem data-1 a data-4, pulando a cor já usada."},
+    {"name": "data-2", "value": "{accentData}", "usage": "Lilac. Série 2 do modo categórico."},
+    {"name": "data-3", "value": "{accentFinance}", "usage": "Peach. Série 3 do modo categórico."},
+    {"name": "data-4", "value": "{accentInfra}", "usage": "Gold. Série 4 do modo categórico. Mint (accentAutomation) nunca é cor de série."},
+    {"name": "data-other", "value": "{borderStrong}", "usage": "Séries fora do destaque e grupo Outros (3,5:1 sobre surface)."},
+    {"name": "data-seq-1", "value": {"dark": "#313a40", "light": "#ced8dc"}, "usage": "Escala sequencial, passo 1 (exemplo com Cyan: mistura de surfaceElevated até o acento). Valor sempre escrito ou na dica."},
+    {"name": "data-seq-2", "value": {"dark": "#47585f", "light": "#abbec5"}, "usage": "Escala sequencial, passo 2. Valor sempre escrito ou na dica."},
+    {"name": "data-seq-3", "value": {"dark": "#5d757e", "light": "#89a4ae"}, "usage": "Escala sequencial, passo 3."},
+    {"name": "data-seq-4", "value": {"dark": "#73939e", "light": "#668a96"}, "usage": "Escala sequencial, passo 4."},
+    {"name": "data-seq-5", "value": "{accent}", "usage": "Escala sequencial, passo 5: o próprio acento."},
+    {"name": "data-div-neg-2", "value": "{accentFinance}", "usage": "Escala divergente: muito abaixo da referência (Peach)."},
+    {"name": "data-div-neg-1", "value": {"dark": "#80706c", "light": "#b2948c"}, "usage": "Escala divergente: abaixo da referência."},
+    {"name": "data-div-0", "value": "{border}", "usage": "Escala divergente: na referência."},
+    {"name": "data-div-pos-1", "value": {"dark": "#5c747d", "light": "#86a0aa"}, "usage": "Escala divergente: acima da referência."},
+    {"name": "data-div-pos-2", "value": "{accent}", "usage": "Escala divergente: muito acima da referência (Cyan). A escala não indica se o desvio é bom ou ruim."}
+  ]},
+  "motion": {"tokens": [
+    {"name": "motion-fast", "value": "100ms", "usage": "Pressionar, hover, troca de cor."},
+    {"name": "motion-base", "value": "200ms", "usage": "Chaves, seleção, menus, dicas, troca de valores."},
+    {"name": "motion-screen", "value": "300ms", "usage": "Troca de tela, painel, folha inferior, diálogo."},
+    {"name": "motion-slow", "value": "450ms", "usage": "Onboarding, entrada de banner, gráficos que se desenham."},
+    {"name": "motion-brand", "value": "1400ms", "usage": "Entrada do logo CAPRA. Só animações de marca."},
+    {"name": "motion-brand-short", "value": "800ms", "usage": "Entrada curta do símbolo e entrada das logos filhas."},
+    {"name": "motion-loop", "value": "1200ms", "usage": "Uma volta do carregamento orbital, em velocidade constante."},
+    {"name": "ease-enter", "value": "cubic-bezier(0.2, 0, 0, 1)", "usage": "Entrada: desacelera ao chegar."},
+    {"name": "ease-exit", "value": "cubic-bezier(0.3, 0, 1, 1)", "usage": "Saída: acelera ao sair; usa o token de duração imediatamente menor que o da entrada."},
+    {"name": "motion-distance", "value": "16px", "usage": "Deslocamento máximo de um elemento ao entrar ou sair."}
   ]}
 }
