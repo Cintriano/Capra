@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sorteio orbital CAPRA</title>
+<!-- Implementação de referência do sorteio orbital (proposta para a Parte 11 do manual CAPRA).
+     Sem dependências: abra o arquivo no navegador. Valores e regras em LEIAME.md. -->
+<style>
+  :root {
+    color-scheme: dark;
+    --background: #121416;
+    --surface-elevated: #202428;
+    --border: #2a3035;
+    --border-strong: #68737a;
+    --text-primary: #e8ecee;
+    --text-secondary: #aab4b9;
+    --accent: #8fb8c5;
+    --focus-ring: 0 0 0 2px #121416, 0 0 0 4px #8fb8c5;
+    --radius-md: 12px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --motion-fast: 100ms;
+    --motion-base: 200ms;
+    --motion-screen: 300ms;
+    --motion-orbit: 2400ms; /* proposta */
+    --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+    --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --background: #f3f5f6;
+      --surface-elevated: #e8ecee;
+      --border: #d0d7db;
+      --border-strong: #7e8990;
+      --text-primary: #121416;
+      --text-secondary: #55606a;
+      --accent: #3b6a79;
+      --focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #3b6a79;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-lg);
+    background: var(--background);
+    color: var(--text-primary);
+    font: 16px/1.5 Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  .controles { display: flex; justify-content: center; gap: 12px; padding: 0 var(--space-md); }
+  button {
+    font: inherit;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: filter var(--motion-fast);
+  }
+  button:hover { filter: brightness(1.12); }
+  button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .rotulo, .legenda { margin: 0; text-align: center; padding: 0 var(--space-md); }
+  .rotulo { color: var(--text-secondary); }
+  .legenda { font-size: 1.25rem; font-weight: 600; min-height: 1.6em; opacity: 0; }
+  .legenda.visivel { opacity: 1; transition: opacity var(--motion-base) var(--ease-enter); }
+
+  .palco { animation: entrar var(--motion-screen) var(--ease-enter); cursor: pointer; }
+  @keyframes entrar { from { opacity: 0; transform: scale(0.9); } }
+  .orbita {
+    --cartao: clamp(76px, 17vw, 132px);
+    position: relative;
+    height: calc(var(--cartao) * 3);
+    max-width: 900px;
+    margin: 0 auto;
+    user-select: none;
+  }
+  .trilha, .nucleo, .cartao { position: absolute; top: 50%; left: 50%; }
+  .trilha { transform: translate(-50%, -50%); border: 1.5px solid var(--border); border-radius: 50%; }
+  .trilha::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: calc(100% + var(--cartao) / 2 + var(--space-md));
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .nucleo { width: 12px; height: 12px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--text-primary); }
+  .cartao {
+    display: grid;
+    place-items: center;
+    width: var(--cartao);
+    height: var(--cartao);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    color: #e8ecee; /* texto fixo sobre os tons de exemplo, que são escuros nos dois temas */
+    font-size: 1.5rem;
+    font-weight: 600;
+    will-change: transform;
+    transition: box-shadow var(--motion-base) var(--ease-enter), opacity var(--motion-fast) var(--ease-exit);
+  }
+  .cartao > span { opacity: var(--profundidade, 1); width: 100%; height: 100%; display: grid; place-items: center; background: var(--tom); }
+  .orbita.parou .cartao:not(.vencedor) { opacity: 0.3; }
+  .orbita.parou .cartao.vencedor { box-shadow: var(--focus-ring); }
+  @media (prefers-reduced-motion: reduce) {
+    .palco { animation: esvanecer var(--motion-base) linear; }
+  }
+  @keyframes esvanecer { from { opacity: 0; } }
+</style>
+</head>
+<body>
+  <div class="controles">
+    <button type="button" id="sortear">Sortear</button>
+    <button type="button" id="reduzido" aria-pressed="false">Simular movimento reduzido</button>
+  </div>
+  <p class="rotulo" id="rotulo" aria-live="polite">Toque em Sortear</p>
+  <div id="area"></div>
+  <p class="legenda" id="legenda" aria-live="polite">&nbsp;</p>
+
+<script>
+  // ── Constantes da especificação ─────────────────────────────
+  const VAGAS = 8;
+  const VOLTAS = 1.5;
+  const GIRO_MS = 2400;  // motion-orbit (proposta) = 2 × motion-loop
+  const PAUSA_MS = 900;  // leitura do vencedor antes da próxima etapa
+
+  // ease-enter da CAPRA como função (equivalente a cubic-bezier(0.2, 0, 0, 1) do CSS).
+  function curvaBezier(x1, y1, x2, y2) {
+    const eixo = (a, b, s) => 3 * a * s * (1 - s) ** 2 + 3 * b * s ** 2 * (1 - s) + s ** 3;
+    return (t) => {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      let baixo = 0, alto = 1, s = t;
+      for (let i = 0; i < 30; i++) {
+        if (eixo(x1, x2, s) < t) baixo = s; else alto = s;
+        s = (baixo + alto) / 2;
+      }
+      return eixo(y1, y2, s);
+    };
+  }
+  const easeEnter = curvaBezier(0.2, 0, 0, 1);
+
+  // Pose de uma vaga: elipse com a frente embaixo; atrás fica menor e mais apagada.
+  function pose(angulo, rx, ry) {
+    const profundidade = (1 + Math.cos(angulo)) / 2;
+    return {
+      x: rx * Math.sin(angulo),
+      y: ry * Math.cos(angulo),
+      escala: 0.5 + 0.5 * profundidade,
+      opacidade: 0.25 + 0.75 * profundidade,
+      profundidade,
+    };
+  }
+  function raios(largura) {
+    const estreito = largura < 600;
+    const rx = Math.min(largura * (estreito ? 0.38 : 0.36), 340);
+    return { rx, ry: rx * (estreito ? 0.45 : 0.3) };
+  }
+
+  const reduzidoSistema = matchMedia('(prefers-reduced-motion: reduce)');
+  let reduzidoSimulado = false;
+  const reduzido = () => reduzidoSistema.matches || reduzidoSimulado;
+
+  const tons = ['#3e5560', '#4a4560', '#5a4e46', '#3f574b', '#2f3a40', '#45505a', '#514a5e', '#4b5a52'];
+  const area = document.getElementById('area');
+  const rotulo = document.getElementById('rotulo');
+  const legenda = document.getElementById('legenda');
+  let atual = null;
+
+  function sortear() {
+    atual?.encerrar();
+    const vencedor = Math.floor(Math.random() * VAGAS);   // o resultado vem antes do giro
+    const passo = (2 * Math.PI) / VAGAS;
+    const fim = -vencedor * passo;                         // vencedor na frente
+    const inicio = fim + VOLTAS * 2 * Math.PI;             // começa atrás do núcleo
+    const duracao = reduzido() ? 0 : GIRO_MS;
+    let angulo = duracao ? inicio : fim;
+    let terminou = false;
+
+    area.innerHTML = '';
+    const palco = document.createElement('div');
+    palco.className = 'palco';
+    const orbita = document.createElement('div');
+    orbita.className = 'orbita';
+    orbita.innerHTML = '<div class="trilha" aria-hidden="true"></div><div class="nucleo" aria-hidden="true"></div>';
+    const cartoes = Array.from({ length: VAGAS }, (_, i) => {
+      const el = document.createElement('div');
+      el.className = 'cartao' + (i === vencedor ? ' vencedor' : '');
+      el.innerHTML = `<span style="--tom:${tons[i]}">${i + 1}</span>`;
+      orbita.appendChild(el);
+      return el;
+    });
+    palco.appendChild(orbita);
+    area.appendChild(palco);
+    const trilha = orbita.querySelector('.trilha');
+    rotulo.textContent = 'Sorteando…';
+    legenda.classList.remove('visivel');
+    legenda.innerHTML = '&nbsp;';
+
+    function posicionar() {
+      const { rx, ry } = raios(orbita.clientWidth);
+      trilha.style.width = `${rx * 2}px`;
+      trilha.style.height = `${ry * 2}px`;
+      cartoes.forEach((el, i) => {
+        const p = pose(angulo + i * passo, rx, ry);
+        el.style.transform = `translate(-50%, -50%) translate(${p.x}px, ${p.y}px) scale(${p.escala})`;
+        el.style.zIndex = String(Math.round(p.profundidade * 100));
+        el.style.setProperty('--profundidade', p.opacidade.toFixed(3));
+      });
+    }
+
+    function parar() {
+      if (terminou) return;
+      terminou = true;
+      angulo = fim;
+      posicionar();
+      orbita.classList.add('parou');
+      legenda.textContent = `Vaga ${vencedor + 1}`;
+      legenda.classList.add('visivel');
+      rotulo.textContent = 'Sorteado';
+    }
+
+    let comeco = null, quadro = 0;
+    function girar(agora) {
+      if (terminou) return;
+      comeco ??= agora;
+      const t = Math.min((agora - comeco) / GIRO_MS, 1);
+      angulo = inicio + (fim - inicio) * easeEnter(t);
+      posicionar();
+      if (t < 1) quadro = requestAnimationFrame(girar);
+    }
+    posicionar();
+    if (duracao) quadro = requestAnimationFrame(girar);
+    const relogio = setTimeout(parar, duracao);      // o relógio decide a parada
+    palco.addEventListener('click', parar);          // um toque leva direto ao resultado
+    addEventListener('resize', posicionar);
+
+    atual = {
+      parar,
+      encerrar() {
+        cancelAnimationFrame(quadro);
+        clearTimeout(relogio);
+        removeEventListener('resize', posicionar);
+      },
+    };
+  }
+
+  document.getElementById('sortear').addEventListener('click', sortear);
+  document.getElementById('reduzido').addEventListener('click', (e) => {
+    reduzidoSimulado = !reduzidoSimulado;
+    e.currentTarget.setAttribute('aria-pressed', String(reduzidoSimulado));
+    e.currentTarget.textContent = reduzidoSimulado ? 'Movimento reduzido: ligado' : 'Simular movimento reduzido';
+  });
+  addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && !(e.target instanceof HTMLButtonElement) && atual) {
+      e.preventDefault();
+      atual.parar();
+    }
+  });
+</script>
+</body>
+</html>
